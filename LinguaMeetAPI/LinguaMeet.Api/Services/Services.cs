@@ -4,6 +4,7 @@ using LinguaMeet.Api.Interfaces.Repositories;
 using LinguaMeet.Api.Interfaces.Services;
 using LinguaMeet.Api.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Text.Json;
 
 namespace LinguaMeet.Api.Services;
 
@@ -130,12 +131,37 @@ public class MeetingService(IMeetingRepository meetings) : IMeetingService
     }
 }
 
-public class MockTranslationService : ITranslationService
+public class MyMemoryTranslationService(HttpClient client, ILogger<MyMemoryTranslationService> logger)
+    : ITranslationService
 {
-    public Task<string> TranslateAsync(string text, string source, string target) =>
-        Task.FromResult(
-            source == target ? text : $"[{Languages.All.GetValueOrDefault(target, target)}] {text}"
-        );
+    public async Task<string> TranslateAsync(string text, string source, string target)
+    {
+        if (string.Equals(source, target, StringComparison.OrdinalIgnoreCase))
+            return text;
+        if (!Languages.IsSupported(source) || !Languages.IsSupported(target))
+            return text;
+
+        try
+        {
+            var path =
+                $"get?q={Uri.EscapeDataString(text)}&langpair={Uri.EscapeDataString(source + "|" + target)}";
+            using var response = await client.GetAsync(path);
+            response.EnsureSuccessStatusCode();
+            using var json = JsonDocument.Parse(await response.Content.ReadAsStreamAsync());
+            var translated = json.RootElement
+                .GetProperty("responseData")
+                .GetProperty("translatedText")
+                .GetString();
+            return string.IsNullOrWhiteSpace(translated)
+                ? text
+                : System.Net.WebUtility.HtmlDecode(translated).Trim();
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Translation from {Source} to {Target} failed.", source, target);
+            return text;
+        }
+    }
 }
 
 public class TranscriptService(ITranscriptRepository repo, IMeetingService meetings)

@@ -22,7 +22,12 @@ b.Services.AddScoped<IAuthService, AuthService>();
 b.Services.AddScoped<IUserService, UserService>();
 b.Services.AddScoped<IMeetingService, MeetingService>();
 b.Services.AddScoped<ITranscriptService, TranscriptService>();
-b.Services.AddSingleton<ITranslationService, MockTranslationService>();
+b.Services.AddHttpClient<ITranslationService, MyMemoryTranslationService>(client =>
+{
+    client.BaseAddress = new Uri("https://api.mymemory.translated.net/");
+    client.Timeout = TimeSpan.FromSeconds(8);
+});
+b.Services.AddSingleton<MeetingConnectionRegistry>();
 b.Services.AddSingleton<JwtHelper>();
 var key = Encoding.UTF8.GetBytes(b.Configuration["Jwt:Key"]!);
 b.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

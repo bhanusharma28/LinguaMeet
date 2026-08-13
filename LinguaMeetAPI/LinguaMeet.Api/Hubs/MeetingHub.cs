@@ -7,12 +7,17 @@ using Microsoft.AspNetCore.SignalR;
 namespace LinguaMeet.Api.Hubs;
 
 [Authorize]
-public class MeetingHub(ITranscriptService transcripts, ITranslationService translations) : Hub
+public class MeetingHub(
+    ITranscriptService transcripts,
+    ITranslationService translations,
+    MeetingConnectionRegistry registry
+) : Hub
 {
     int UserId => int.Parse(Context.User!.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     public async Task JoinMeeting(string room, string language, bool microphoneOn, bool cameraOn)
     {
+        registry.Join(Context.ConnectionId, room, language);
         await Groups.AddToGroupAsync(Context.ConnectionId, room);
         await Clients
             .OthersInGroup(room)
@@ -34,8 +39,15 @@ public class MeetingHub(ITranscriptService transcripts, ITranslationService tran
 
     public async Task LeaveMeeting(string room)
     {
+        registry.Remove(Context.ConnectionId);
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, room);
         await Clients.OthersInGroup(room).SendAsync("ParticipantLeft", Context.ConnectionId);
+    }
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        registry.Remove(Context.ConnectionId);
+        await base.OnDisconnectedAsync(exception);
     }
 
     public Task SendOffer(
@@ -74,17 +86,28 @@ public class MeetingHub(ITranscriptService transcripts, ITranslationService tran
         if (string.IsNullOrWhiteSpace(text))
             return;
         var saved = await transcripts.SaveAsync(meetingId, UserId, new(text, source));
-        var translated = await translations.TranslateAsync(text, source, target);
-        await Clients
-            .Group(room)
-            .SendAsync(
+        var recipients = registry.InRoom(room);
+        var byLanguage = recipients
+            .Select(x => x.Language)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(
+                language => language,
+                language => translations.TranslateAsync(text, source, language),
+                StringComparer.OrdinalIgnoreCase
+            );
+        await Task.WhenAll(byLanguage.Values);
+        await Task.WhenAll(
+            recipients.Select(recipient =>
+                Clients.Client(recipient.ConnectionId).SendAsync(
                 "ReceiveTranscript",
                 UserId,
                 Context.User!.Identity!.Name,
                 text,
-                translated,
+                byLanguage[recipient.Language].Result,
                 source,
                 saved.CreatedAt
-            );
+                )
+            )
+        );
     }
 }

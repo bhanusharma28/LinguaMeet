@@ -1,5 +1,6 @@
 using LinguaMeet.Api.DTO;
 using LinguaMeet.Api.Helpers;
+using LinguaMeet.Api.Hubs;
 using LinguaMeet.Api.Interfaces.Repositories;
 using LinguaMeet.Api.Models;
 using LinguaMeet.Api.Services;
@@ -16,6 +17,20 @@ public class CoreTests
         var code = RoomCodeGenerator.Generate();
         Assert.Equal(6, code.Length);
         Assert.Matches("^[A-Z2-9]+$", code);
+    }
+
+    [Fact]
+    public void MeetingConnectionRegistry_TracksEachParticipantsLanguage()
+    {
+        var registry = new MeetingConnectionRegistry();
+        registry.Join("host", "abc123", "hi");
+        registry.Join("guest", "ABC123", "en");
+
+        var participants = registry.InRoom("AbC123");
+
+        Assert.Equal(2, participants.Count);
+        Assert.Contains(participants, x => x.ConnectionId == "host" && x.Language == "hi");
+        Assert.Contains(participants, x => x.ConnectionId == "guest" && x.Language == "en");
     }
 
     [Fact]
