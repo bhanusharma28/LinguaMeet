@@ -10,6 +10,15 @@
   let translationOn = true;
   let speechRecognition = null;
 
+  function showNotice(message, persistent = false) {
+    notice.style.display = "block";
+    notice.textContent = message;
+    if (!persistent)
+      setTimeout(() => {
+        if (notice.textContent === message) notice.style.display = "none";
+      }, 3000);
+  }
+
   function startRecognitionIfNeeded() {
     if (speechRecognition || !window.recognitionEnabled) return;
 
@@ -17,17 +26,32 @@
       "caption-" + meetingConfig.userId,
     );
     speechRecognition = startSpeechRecognition(
-      (text) =>
-        connection.invoke(
-          "SendTranscript",
-          meetingConfig.roomCode,
-          meetingConfig.meetingId,
-          text,
-          meetingConfig.language,
-          meetingConfig.language,
-        ),
+      async (text) => {
+        if (captionsOn) ownCaption.textContent = text;
+        try {
+          await connection.invoke(
+            "SendTranscript",
+            meetingConfig.roomCode,
+            meetingConfig.meetingId,
+            text,
+            meetingConfig.language,
+            meetingConfig.language,
+          );
+        } catch (error) {
+          console.error("Final transcript could not be saved.", error);
+          showNotice("Speech was recognized, but the transcript could not be saved. Reconnecting…", true);
+        }
+      },
       (text) => {
         if (captionsOn) ownCaption.textContent = text;
+      },
+      (status, message) => {
+        if (status === "error" || status === "unsupported") {
+          speechRecognition?.stop();
+          speechRecognition = null;
+          showNotice(message, true);
+        }
+        else if (status === "listening") showNotice(message);
       },
     );
   }
@@ -91,6 +115,8 @@
       .forEach(
         (element) => (element.style.display = captionsOn ? "block" : "none"),
       );
+    if (captionsOn && window.recognitionEnabled && !speechRecognition)
+      startRecognitionIfNeeded();
   };
   translationBtn.onclick = () => {
     translationOn = !translationOn;
@@ -98,6 +124,20 @@
   };
   peopleBtn.onclick = () =>
     alert(LinguaRtc.peers.size + 1 + " participant(s) connected");
+
+  connection.on("ReceiveTranscript", (userId, name, original, translated) => {
+    const element = document.getElementById("caption-" + userId);
+    if (element && captionsOn)
+      element.textContent = translationOn ? translated : original;
+    setTimeout(() => {
+      if (element) element.textContent = "";
+    }, 7000);
+  });
+
+  connection.onreconnected(() => {
+    showNotice("Meeting reconnected. Live captions resumed.");
+    if (window.recognitionEnabled && !speechRecognition) startRecognitionIfNeeded();
+  });
 
   try {
     await LinguaRtc.start(connection);
@@ -139,15 +179,6 @@
     notice.textContent =
       "Live speech recognition is unavailable. Video meetings still work.";
   }
-
-  connection.on("ReceiveTranscript", (userId, name, original, translated) => {
-    const element = document.getElementById("caption-" + userId);
-    if (element && captionsOn)
-      element.textContent = translationOn ? translated : original;
-    setTimeout(() => {
-      if (element) element.textContent = "";
-    }, 7000);
-  });
 
   window.addEventListener("beforeunload", () => {
     if (connection.state === signalR.HubConnectionState.Connected)
