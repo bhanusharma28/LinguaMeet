@@ -9,6 +9,22 @@
   let captionsOn = true;
   let translationOn = true;
   let speechRecognition = null;
+  let captionSequence = 0;
+
+  function renderLiveCaption(name, text, temporary = false) {
+    if (!captionsOn || !text) return;
+    const sequence = ++captionSequence;
+    liveCaptionSpeaker.textContent = name ? name + ":" : "";
+    liveCaptionText.textContent = text;
+    liveCaption.style.display = "block";
+    setTimeout(() => {
+      if (captionSequence === sequence) {
+        liveCaption.style.display = "none";
+        liveCaptionSpeaker.textContent = "";
+        liveCaptionText.textContent = "";
+      }
+    }, temporary ? 2500 : 7000);
+  }
 
   function showNotice(message, persistent = false) {
     notice.style.display = "block";
@@ -28,6 +44,7 @@
     speechRecognition = startSpeechRecognition(
       async (text) => {
         if (captionsOn) ownCaption.textContent = text;
+        renderLiveCaption(meetingConfig.name, text);
         try {
           await connection.invoke(
             "SendTranscript",
@@ -43,7 +60,10 @@
         }
       },
       (text) => {
-        if (captionsOn) ownCaption.textContent = text;
+        if (captionsOn) {
+          ownCaption.textContent = text;
+          if (text) renderLiveCaption(meetingConfig.name, text, true);
+        }
       },
       (status, message) => {
         if (status === "error" || status === "unsupported") {
@@ -115,6 +135,7 @@
       .forEach(
         (element) => (element.style.display = captionsOn ? "block" : "none"),
       );
+    if (!captionsOn) liveCaption.style.display = "none";
     if (captionsOn && window.recognitionEnabled && !speechRecognition)
       startRecognitionIfNeeded();
   };
@@ -127,8 +148,9 @@
 
   connection.on("ReceiveTranscript", (userId, name, original, translated) => {
     const element = document.getElementById("caption-" + userId);
-    if (element && captionsOn)
-      element.textContent = translationOn ? translated : original;
+    const text = translationOn && translated ? translated : original;
+    if (element && captionsOn) element.textContent = text;
+    renderLiveCaption(name, text);
     setTimeout(() => {
       if (element) element.textContent = "";
     }, 7000);
