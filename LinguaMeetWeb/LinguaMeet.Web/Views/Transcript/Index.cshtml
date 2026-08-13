@@ -1,0 +1,17 @@
+﻿@model List<TranscriptItem>
+@{ViewData["Title"]="Transcript";}<div class="container py-5">
+<a href="/dashboard">&larr; Dashboard</a>
+<div class="d-flex justify-content-between mt-3">
+<div>
+<span class="eyebrow">MEETING @ViewBag.MeetingId</span>
+<h1>Transcript</h1>
+</div>
+</div>
+<div class="transcript mt-4">@if(!Model.Any()){<div class="empty">No finalized speech was captured in this meeting.</div>}@foreach(var x in Model){<article>
+<div class="transcript-meta">
+<b>@x.SpeakerName</b>
+<span>@x.CreatedAt.ToLocalTime().ToString("h:mm:ss tt") &middot; @LanguageOptions.All.GetValueOrDefault(x.SourceLanguage, x.SourceLanguage)</span>
+</div>
+<p>@x.OriginalText</p>
+</article>}</div>
+</div>

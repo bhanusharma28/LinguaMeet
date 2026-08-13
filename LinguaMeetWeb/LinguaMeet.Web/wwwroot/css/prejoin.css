@@ -1,0 +1,72 @@
+.device-controls {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+  margin: 1.25rem 0;
+}
+.device-control {
+  width: 100%;
+  min-height: 54px;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid #b8c4c8;
+  border-radius: 12px;
+  background: #fff;
+  color: #12232b;
+  font-weight: 650;
+  transition: 0.15s;
+}
+.device-control:hover {
+  border-color: #007f78;
+  background: #f2fbf8;
+}
+.device-control:focus-visible {
+  outline: 3px solid #007f7833;
+  border-color: #007f78;
+}
+.device-control:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.device-label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  white-space: nowrap;
+}
+.device-icon {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #d9f3ed;
+  color: #007f78;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+.device-status {
+  flex: 0 0 48px;
+  padding: 0.25rem 0.5rem;
+  text-align: center;
+  border-radius: 999px;
+  background: #d9f3ed;
+  color: #00675f;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.device-control.is-off {
+  border-color: #d9dee0;
+  background: #f5f6f6;
+  color: #607076;
+}
+.device-control.is-off .device-icon,
+.device-control.is-off .device-status {
+  background: #e6e9ea;
+  color: #536167;
+}

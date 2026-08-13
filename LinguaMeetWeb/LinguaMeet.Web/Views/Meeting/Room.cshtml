@@ -1,0 +1,74 @@
+﻿@model MeetingViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{ Layout=null; var initials=string.Concat(Model.DisplayName.Split(' ',StringSplitOptions.RemoveEmptyEntries).Take(2).Select(x=>x[0])); }
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Room @Model.RoomCode - LinguaMeet</title>
+<link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/media-status.css">
+</head>
+<body class="meeting-body">
+<header class="meeting-head">
+<b>Lingua<span>Meet</span>
+</b>
+<div>Room: <strong>@Model.RoomCode</strong> <button class="copy-chip" onclick="navigator.clipboard.writeText(location.href)">Copy link</button>
+</div>
+</header>
+<main id="videoGrid" class="video-grid">
+<article class="video-tile" id="localTile">
+<video id="localVideo" autoplay muted playsinline>
+</video>
+<div class="camera-off-panel">
+<div class="participant-avatar">@initials</div>
+</div>
+<div class="mic-status">Mic off</div>
+<div class="tile-name">@Model.DisplayName <span>(You)</span>
+</div>
+<div class="tile-caption" id="caption-@Context.Session.GetInt32("UserId")">
+</div>
+</article>
+</main>
+<div id="notice" class="meeting-notice">
+</div>
+<footer class="controls">
+<button id="muteBtn">MIC<small>Mute</small>
+</button>
+<button id="cameraBtn">CAM<small>Camera</small>
+</button>
+<button id="subtitlesBtn" class="active">CC<small>Subtitles</small>
+</button>
+<button id="translationBtn" class="active">TR<small>Translation</small>
+</button>
+<button id="peopleBtn">PPL<small>People</small>
+</button>
+<form method="post" action="/meeting/@Model.RoomCode/leave">
+<button class="leave">END<small>Leave</small>
+</button>
+</form>
+</footer>
+<script>
+    window.meetingConfig = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new
+    {
+        roomCode = Model.RoomCode,
+        meetingId = Model.Id,
+        language = Model.Language,
+        token = Model.Token,
+        userId = Context.Session.GetInt32("UserId"),
+        name = Model.DisplayName,
+        apiUrl = Configuration["ApiSettings:BaseUrl"]
+    }));
+</script>
+<script src="/js/signalr.min.js">
+</script>
+<script src="/js/webrtc.js">
+</script>
+<script src="/js/speechRecognition.js">
+</script>
+<script src="/js/meeting.js">
+</script>
+</body>
+</html>

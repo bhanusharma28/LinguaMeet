@@ -1,0 +1,43 @@
+.camera-off-panel {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  background: linear-gradient(145deg, #132a31, #09161b);
+  z-index: 2;
+}
+.video-tile.camera-off .camera-off-panel {
+  display: grid;
+}
+.participant-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #d9f3ed;
+  color: #007f78;
+  font-size: 2rem;
+  font-weight: 800;
+}
+.mic-status {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  display: none;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: #b4232c;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  z-index: 3;
+}
+.video-tile.mic-off .mic-status {
+  display: block;
+}
+.tile-name,
+.tile-caption {
+  z-index: 3;
+}

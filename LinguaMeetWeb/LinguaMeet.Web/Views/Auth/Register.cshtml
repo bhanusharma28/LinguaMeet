@@ -1,0 +1,60 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<link rel="stylesheet" href="~/css/password.css" asp-append-version="true">
+
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h2>Create your account</h2>
+        <p>Choose the language you understand best.</p>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <label asp-for="DisplayName"></label>
+            <input asp-for="DisplayName" class="form-control">
+
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control">
+
+            <label asp-for="Password"></label>
+            <div class="password-field">
+                <input asp-for="Password" type="password" class="form-control">
+                <button type="button" class="password-toggle" data-password-toggle="Password"
+                        aria-label="Show password" aria-pressed="false">
+                    <span class="eye-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <label asp-for="ConfirmPassword"></label>
+            <div class="password-field">
+                <input asp-for="ConfirmPassword" type="password" class="form-control">
+                <button type="button" class="password-toggle" data-password-toggle="ConfirmPassword"
+                        aria-label="Show confirm password" aria-pressed="false">
+                    <span class="eye-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <label asp-for="PreferredLanguage"></label>
+            <select asp-for="PreferredLanguage" class="form-select">
+                @foreach (var language in LanguageOptions.All)
+                {
+                    <option value="@language.Key">@language.Value</option>
+                }
+            </select>
+
+            <div asp-validation-summary="All" class="text-danger mt-2"></div>
+            <button class="btn btn-primary w-100 mt-4">Create account</button>
+        </form>
+
+        <small>Already registered? <a href="/auth/login">Login</a></small>
+    </div>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/site.js" asp-append-version="true"></script>
+}

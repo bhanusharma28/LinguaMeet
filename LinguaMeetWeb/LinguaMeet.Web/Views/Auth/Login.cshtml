@@ -1,0 +1,46 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<link rel="stylesheet" href="~/css/password.css" asp-append-version="true">
+
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h2>Welcome back</h2>
+        <p>Continue to your meetings.</p>
+
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-success">@TempData["Message"]</div>
+        }
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control">
+            <span asp-validation-for="Email"></span>
+
+            <label asp-for="Password"></label>
+            <div class="password-field">
+                <input asp-for="Password" type="password" class="form-control">
+                <button type="button" class="password-toggle" data-password-toggle="Password"
+                        aria-label="Show password" aria-pressed="false">
+                    <span class="eye-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+            <span asp-validation-for="Password"></span>
+
+            <button class="btn btn-primary w-100 mt-4">Login</button>
+        </form>
+
+        <small>New here? <a href="/auth/register">Create an account</a></small>
+    </div>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/site.js" asp-append-version="true"></script>
+}

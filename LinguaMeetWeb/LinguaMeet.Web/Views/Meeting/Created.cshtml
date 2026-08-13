@@ -1,0 +1,13 @@
+﻿@{ViewData["Title"]="Meeting created";}<div class="auth-wrap">
+<div class="auth-card text-center">
+<div class="success-icon">&#10003;</div>
+<h2>Meeting created</h2>
+<p>Share this room code with your participants.</p>
+<div class="room-code">@ViewBag.Code</div>
+<div class="input-group my-3">
+<input id="meetingLink" class="form-control" readonly value="@ViewBag.Link">
+<button class="btn btn-outline-dark" onclick="navigator.clipboard.writeText(document.getElementById('meetingLink').value)">Copy</button>
+</div>
+<a class="btn btn-primary w-100" href="/join/@ViewBag.Code">Join meeting</a>
+</div>
+</div>

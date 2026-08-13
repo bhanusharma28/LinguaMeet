@@ -1,0 +1,50 @@
+﻿@{ ViewData["Title"] = "Join meeting"; }
+<link rel="stylesheet" href="~/css/prejoin.css" asp-append-version="true">
+<div class="container py-5">
+<div class="join-preview">
+<div class="preview-pane">
+<video id="previewVideo" autoplay muted playsinline>
+</video>
+<div id="permissionMessage" class="permission">Requesting camera and microphone...</div>
+</div>
+<div class="join-panel">
+<span class="eyebrow">PRE-JOIN CHECK</span>
+<h2>Ready to join?</h2>
+<div class="device-controls">
+<button type="button" id="previewMic" class="device-control" disabled>
+<span class="device-label">
+<span class="device-icon">MIC</span>Microphone</span>
+<span class="device-status">On</span>
+</button>
+<button type="button" id="previewCamera" class="device-control" disabled>
+<span class="device-label">
+<span class="device-icon">CAM</span>Camera</span>
+<span class="device-status">On</span>
+</button>
+</div>
+<form method="post" action="/join/@ViewBag.RoomCode">
+<label>Room code</label>
+<input name="roomCode" class="form-control text-uppercase" maxlength="6" value="@ViewBag.RoomCode" required>
+<label>Your language</label>
+<select name="language" class="form-select">
+    @foreach (var language in LanguageOptions.All)
+    {
+        <option value="@language.Key" selected="@(language.Key == (string)ViewBag.Language)">@language.Value</option>
+    }
+</select>
+<button class="btn btn-primary w-100 mt-4">Join meeting</button>
+</form>
+<p id="viewOnlyHelp" class="small text-secondary mt-3 d-none">
+    You can receive other participants' media. Your camera, microphone, and speech recognition will remain off.
+</p>
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger mt-3">@TempData["Error"]</div>
+}
+</div>
+</div>
+</div>
+@section Scripts
+{
+    <script src="~/js/prejoin.js" asp-append-version="true"></script>
+}

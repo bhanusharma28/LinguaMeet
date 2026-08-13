@@ -1,0 +1,6 @@
+@LinguaMeet.Api_HostAddress = http://localhost:5285
+
+GET {{LinguaMeet.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

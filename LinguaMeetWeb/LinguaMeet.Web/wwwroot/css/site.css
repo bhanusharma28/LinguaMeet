@@ -1,0 +1,355 @@
+:root {
+  --ink: #12232b;
+  --teal: #007f78;
+  --mint: #d9f3ed;
+  --orange: #ff8a4c;
+  --paper: #f7faf8;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: Inter, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+}
+a {
+  color: var(--teal);
+}
+.lm-nav {
+  background: #102d34;
+  padding: 1rem 0;
+}
+.navbar-brand {
+  font-size: 1.35rem;
+}
+.navbar-brand span,
+.meeting-head span {
+  color: #67dfcb;
+}
+.min-vh-75 {
+  min-height: 75vh;
+}
+.hero {
+  background:
+    radial-gradient(circle at 75% 15%, #d7f4ec 0, transparent 28%), var(--paper);
+}
+.hero h1 {
+  font-size: clamp(3rem, 6vw, 5.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+  font-weight: 800;
+}
+.hero h1 span {
+  color: var(--teal);
+}
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.17em;
+  color: var(--teal);
+  font-weight: 800;
+}
+.btn-primary {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+.btn-primary:hover {
+  background: #006b65;
+  border-color: #006b65;
+}
+.hero-card {
+  background: #102d34;
+  padding: 1rem;
+  border-radius: 28px;
+  box-shadow: 0 32px 60px #063b3228;
+  transform: rotate(2deg);
+}
+.mock-video {
+  height: 340px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #163e47, #0a1d25);
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.avatar {
+  width: 110px;
+  height: 110px;
+  background: var(--orange);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: white;
+}
+.name {
+  position: absolute;
+  bottom: 65px;
+  left: 22px;
+  color: #fff;
+}
+.caption {
+  position: absolute;
+  bottom: 18px;
+  left: 22px;
+  right: 22px;
+  background: #000b;
+  color: white;
+  text-align: center;
+  padding: 0.65rem;
+  border-radius: 10px;
+}
+.language-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  color: #fff;
+  padding: 1.2rem;
+}
+.auth-wrap {
+  min-height: calc(100vh - 70px);
+  display: grid;
+  place-items: center;
+  padding: 3rem 1rem;
+  background: radial-gradient(circle at 30% 20%, var(--mint), transparent 32%);
+}
+.auth-card {
+  width: min(460px, 100%);
+  background: white;
+  border-radius: 22px;
+  padding: 2.5rem;
+  box-shadow: 0 22px 50px #1233;
+}
+.auth-card label,
+.join-panel label {
+  font-weight: 650;
+  margin-top: 1rem;
+  margin-bottom: 0.35rem;
+}
+.auth-card small {
+  display: block;
+  text-align: center;
+  margin-top: 1.5rem;
+}
+.room-code {
+  font-size: 3.5rem;
+  letter-spacing: 0.2em;
+  font-weight: 800;
+  color: var(--teal);
+}
+.success-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: var(--mint);
+  color: var(--teal);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 1rem;
+  font-size: 2rem;
+}
+.join-card {
+  background: #dff5ef;
+  border-radius: 20px;
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+.join-card form {
+  min-width: 360px;
+}
+.table th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #718186;
+  padding: 1rem;
+}
+.table td {
+  padding: 1.2rem;
+}
+.empty {
+  text-align: center;
+  padding: 3rem !important;
+  color: #748287;
+}
+.join-preview {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 18px 45px #1232;
+  max-width: 1000px;
+  margin: auto;
+}
+.preview-pane {
+  min-height: 480px;
+  background: #102d34;
+  position: relative;
+}
+.preview-pane video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.permission {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background: #000a;
+  color: white;
+  padding: 0.8rem;
+  border-radius: 10px;
+}
+.join-panel {
+  padding: 3rem;
+}
+.meeting-body {
+  background: #09161b;
+  color: white;
+  min-height: 100vh;
+  overflow: hidden;
+}
+.meeting-head {
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.5rem;
+  background: #10252c;
+}
+.copy-chip {
+  border: 0;
+  border-radius: 20px;
+  padding: 0.35rem 0.7rem;
+  margin-left: 0.5rem;
+}
+.video-grid {
+  height: calc(100vh - 154px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 10px;
+  padding: 10px;
+}
+.video-tile {
+  background: #14282f;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
+}
+.video-tile video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tile-name {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  background: #0009;
+  padding: 0.35rem 0.65rem;
+  border-radius: 7px;
+}
+.tile-caption {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 18px;
+  background: #000c;
+  padding: 0.7rem;
+  text-align: center;
+  border-radius: 8px;
+  font-size: 1.1rem;
+}
+.controls {
+  height: 90px;
+  background: #10252c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.controls button {
+  width: 78px;
+  height: 64px;
+  background: transparent;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  font-size: 1.25rem;
+}
+.controls small {
+  display: block;
+  font-size: 0.7rem;
+}
+.controls button.active {
+  background: #21454c;
+}
+.controls .leave {
+  background: #d94343;
+}
+.meeting-notice {
+  position: fixed;
+  top: 75px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffc107;
+  color: #18252b;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  display: none;
+}
+.transcript article {
+  background: white;
+  border-left: 4px solid var(--teal);
+  padding: 1.3rem 1.5rem;
+  margin-bottom: 1rem;
+  border-radius: 0 12px 12px 0;
+}
+.transcript-meta {
+  display: flex;
+  justify-content: space-between;
+}
+.transcript-meta span {
+  font-size: 0.8rem;
+  color: #728086;
+}
+.transcript p {
+  margin: 0.8rem 0 0;
+  font-size: 1.1rem;
+}
+@media (max-width: 768px) {
+  .join-card,
+  .join-preview {
+    display: block;
+  }
+  .join-card form {
+    min-width: 0;
+    margin-top: 1rem;
+  }
+  .preview-pane {
+    min-height: 300px;
+  }
+  .hero-card {
+    margin-top: 3rem;
+  }
+  .controls {
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+  .meeting-head {
+    font-size: 0.8rem;
+  }
+  .video-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero h1 {
+    font-size: 3.1rem;
+  }
+}
